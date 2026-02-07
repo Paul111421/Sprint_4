@@ -3,91 +3,92 @@
 //Проверка - нажать на вопрос и сравнить ответы
 
 import org.junit.After;
-import org.junit.Assert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+import org.junit.Before;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import testvar.QuestionsData;
+import testvar.HomePage;
 
 @RunWith(Parameterized.class)
 public class ImportantQuestions {
 
     private WebDriver driver;
 
-    private final String questionHeadingXpath;
-    private final String questionPanelXpath;
-    private final String textExpected;
+    private final String browserName;
 
-    public ImportantQuestions(String questionHeadingXpath, String questionPanelXpath, String textExpected){
-        this.questionHeadingXpath = questionHeadingXpath;
-        this.questionPanelXpath = questionPanelXpath;
-        this.textExpected = textExpected;
+    public ImportantQuestions(String browserName){
+        this.browserName = browserName;
     }
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "{0}")
     public static Object[][] getImportantQuestionsData(){
         return new Object[][]{
-                {QuestionsData.questionOneHeading, QuestionsData.questionOnePanel, QuestionsData.questionOneExpectedText},
-                {QuestionsData.questionTwoHeading, QuestionsData.questionTwoPanel, QuestionsData.questionTwoExpectedText},
-                {QuestionsData.questionThreeHeading, QuestionsData.questionThreePanel, QuestionsData.questionThreeExpectedText},
-                {QuestionsData.questionFourHeading, QuestionsData.questionFourPanel, QuestionsData.questionFourExpectedText},
-                {QuestionsData.questionFiveHeading, QuestionsData.questionFivePanel, QuestionsData.questionFiveExpectedText},
-                {QuestionsData.questionSixHeading, QuestionsData.questionSixPanel, QuestionsData.questionSixExpectedText},
-                {QuestionsData.questionSevenHeading, QuestionsData.questionSevenPanel, QuestionsData.questionSevenExpectedText},
-                {QuestionsData.questionEightHeading, QuestionsData.questionEightPanel, QuestionsData.questionEightExpectedText},
+                {"firefox"},
+                {"chrome"},
         };
     }
 
+    @Before
+    public void setUp(){
+        if("firefox".equals(browserName)){
+            System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
+            driver = new FirefoxDriver();
+        } else if("chrome".equals(browserName)){
+            System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
+            ChromeOptions options = new ChromeOptions();
+            options.setBinary("/usr/bin/google-chrome-stable");
+            driver = new ChromeDriver(options);
+        }
+        driver.manage().window().maximize();
+        driver.get("https://qa-scooter.praktikum-services.ru/");
+
+    }
+
     @Test
-    public void questionTestFirefox(){
+    public void questionTest(){
 
         String textActual;
 
-        System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
-        driver = new FirefoxDriver();
+        HomePage.clickCookieButton(driver);
 
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        HomePage.clickQuestionOneHeading(driver);
+        textActual = HomePage.getQuestionOnePanelText(driver);
+        HomePage.assertQuestionOneTextExpectedActual(textActual);
 
-        driver.findElement(QuestionsData.cookieButton).click();
+        HomePage.clickQuestionTwoHeading(driver);
+        textActual = HomePage.getQuestionTwoPanelText(driver);
+        HomePage.assertQuestionTwoTextExpectedActual(textActual);
 
-        WebElement stationElement = driver.findElement(By.xpath(questionHeadingXpath));
-        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", stationElement);
+        HomePage.clickQuestionThreeHeading(driver);
+        textActual = HomePage.getQuestionThreePanelText(driver);
+        HomePage.assertQuestionThreeTextExpectedActual(textActual);
 
-        driver.findElement(By.xpath(questionHeadingXpath)).click();
-        textActual = driver.findElement(By.xpath(questionPanelXpath)).getText();
-        Assert.assertEquals(textExpected, textActual);
+        HomePage.clickQuestionFourHeading(driver);
+        textActual = HomePage.getQuestionFourPanelText(driver);
+        HomePage.assertQuestionFourTextExpectedActual(textActual);
+
+        HomePage.clickQuestionFiveHeading(driver);
+        textActual = HomePage.getQuestionFivePanelText(driver);
+        HomePage.assertQuestionFiveTextExpectedActual(textActual);
+
+        HomePage.clickQuestionSixHeading(driver);
+        textActual = HomePage.getQuestionSixPanelText(driver);
+        HomePage.assertQuestionSixTextExpectedActual(textActual);
+
+        HomePage.clickQuestionSevenHeading(driver);
+        textActual = HomePage.getQuestionSevenPanelText(driver);
+        HomePage.assertQuestionSevenTextExpectedActual(textActual);
+
+        HomePage.clickQuestionEightHeading(driver);
+        textActual = HomePage.getQuestionEightPanelText(driver);
+        HomePage.assertQuestionEightTextExpectedActual(textActual);
+
     }
 
-
-    @Test
-    public void questionTestChromium(){
-
-        String textActual;
-
-        System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary("/usr/bin/google-chrome-stable");
-        driver = new ChromeDriver(options);
-
-
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-
-        driver.findElement(QuestionsData.cookieButton).click();
-
-        WebElement stationElement = driver.findElement(By.xpath(questionHeadingXpath));
-        ((JavascriptExecutor)driver).executeScript("arguments[0].scrollIntoView();", stationElement);
-
-        driver.findElement(By.xpath(questionHeadingXpath)).click();
-        textActual = driver.findElement(By.xpath(questionPanelXpath)).getText();
-        Assert.assertEquals(textExpected, textActual);
-    }
 
     @After
     public void teardown(){

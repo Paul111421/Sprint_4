@@ -20,8 +20,9 @@
 //Перейти на новую страницу
 //Проверить, что форма статуса заказа не появилась
 
-import org.junit.Assert;
-import org.openqa.selenium.By;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -30,51 +31,65 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.After;
 import org.junit.Test;
-import testvar.OrderData;
-import testvar.FacultyData;
+import testvar.HomePage;
+import testvar.OrderPage;
+import testvar.StatusPage;
+
+import static testvar.OrderPage.*;
 
 import java.util.Set;
 
+
+@RunWith(Parameterized.class)
 public class FacultyTasks {
 
     private WebDriver driver;
 
-    @Test
-    public void logoSamokatFirefox(){
-        System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
-        driver = new FirefoxDriver();
+    private final String browserName;
 
+    public FacultyTasks(String browserName){
+        this.browserName = browserName;
+    }
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Object[][] getImportantQuestionsData(){
+        return new Object[][]{
+                {"firefox"},
+                {"chrome"},
+        };
+    }
+
+    @Before
+    public void setUp(){
+        if("firefox".equals(browserName)){
+            System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
+            driver = new FirefoxDriver();
+        } else if("chrome".equals(browserName)){
+            System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
+            ChromeOptions options = new ChromeOptions();
+            options.setBinary("/usr/bin/google-chrome-stable");
+            driver = new ChromeDriver(options);
+        }
+        driver.manage().window().maximize();
         driver.get("https://qa-scooter.praktikum-services.ru/");
-
-        driver.findElement(By.xpath(OrderData.orderButtonHeader)).click();
-        driver.findElement(FacultyData.samokatLogo).click();
-        new WebDriverWait(driver, 1)
-                .until(ExpectedConditions.presenceOfElementLocated(FacultyData.samokatHomePage));
     }
 
     @Test
-    public void logoSamokatChromium(){
+    public void logoSamokat(){
 
-        System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary("/usr/bin/google-chrome-stable");
-        driver = new ChromeDriver(options);
+        HomePage.clickOrderButton(driver, HomePage.getOrderButtonHeader());
+        HomePage.clickSamokatLogo(driver);
+        HomePage.assertHomePageAfterClickingOnSamokatLogo(driver);
 
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-
-        driver.findElement(By.xpath(OrderData.orderButtonHeader)).click();
-        driver.findElement(FacultyData.samokatLogo).click();
-        new WebDriverWait(driver, 1)
-                .until(ExpectedConditions.presenceOfElementLocated(FacultyData.samokatHomePage));
     }
+
 
     public void switchToNewWindowIfOpened() {
 
-        driver.get("https://qa-scooter.praktikum-services.ru/");
         // Получаем текущее количество окон
         Set<String> originalWindow = driver.getWindowHandles();
 
-        driver.findElement(FacultyData.yandexLogo).click();
+        HomePage.clickYandexLogo(driver);
 
         new WebDriverWait(driver, 15)
                 .until(ExpectedConditions.numberOfWindowsToBe(2));
@@ -93,35 +108,19 @@ public class FacultyTasks {
             System.out.println("Новое окно не открылось");
         }
 
-        new WebDriverWait(driver, 15)
-                .until(ExpectedConditions.urlToBe(FacultyData.yandexHomePage));
+        HomePage.assertYandexUrl(driver);
     }
 
     //Очень странно - открывается вкладка, а засчитывает за окно... Или всё же опечатка или тут окно есть вкладка?
     //Оставляю пока так. По доке numberOfWindowsToBe ожидает окна, но считает вкладки...
 
     @Test
-    public void logoYandexFirefox(){ //Очень странно - открывается вкладка, а засчитывает за окно... Или всё же опечатка или тут окно есть вкладка?
-
-        System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
-        driver = new FirefoxDriver();
-
+    public void logoYandex(){ //Очень странно - открывается вкладка, а засчитывает за окно... Или всё же опечатка или тут окно есть вкладка?
         switchToNewWindowIfOpened();
     }
 
     @Test
-    public void logoYandexChromium(){
-
-        System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary("/usr/bin/google-chrome-stable");
-        driver = new ChromeDriver(options);
-
-        switchToNewWindowIfOpened();
-    }
-
-    @Test
-    public void formErrorsShowFirefox(){
+    public void formErrorsShow(){
 
         String formErrorTextNameActual;
         String formErrorTextFamilyNameActual;
@@ -129,95 +128,31 @@ public class FacultyTasks {
         String formErrorTextMetroActual;
         String formErrorTextTelephoneActual;
 
-        System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
-        driver = new FirefoxDriver();
+        HomePage.clickOrderButton(driver, HomePage.getOrderButtonHeader());
+        clickButtonNextFormPage(driver);
 
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        waitForFormErrorName(driver);
+        formErrorTextNameActual  = getFormErrorNameTextActual(driver);
+        formErrorTextFamilyNameActual = getFormErrorFamilyNameTextActual(driver);
+        formErrorTextAddressActual = getFormErrorAddressTextActual(driver);
+        formErrorTextMetroActual = getFormErrorMetroTextActual(driver);
+        formErrorTextTelephoneActual = getFormErrorTelephoneTextActual(driver);
 
-        driver.findElement(By.xpath(OrderData.orderButtonHeader)).click();
-        driver.findElement(OrderData.buttonNextFormPage).click();
-
-        new WebDriverWait(driver, 1)
-                .until(ExpectedConditions.presenceOfElementLocated(FacultyData.formErrorLocatorName));
-        formErrorTextNameActual  = driver.findElement(FacultyData.formErrorLocatorName).getText();
-        formErrorTextFamilyNameActual = driver.findElement(FacultyData.formErrorLocatorFamilyName).getText();
-        formErrorTextAddressActual = driver.findElement(FacultyData.formErrorLocatorAddress).getText();
-        formErrorTextMetroActual = driver.findElement(FacultyData.formErrorLocatorMetro).getText();
-        formErrorTextTelephoneActual = driver.findElement(FacultyData.formErrorLocatorTelephone).getText();
-
-        Assert.assertEquals(FacultyData.formErrorTextNameExpected, formErrorTextNameActual);
-        Assert.assertEquals(FacultyData.formErrorTextFamilyNameExpected, formErrorTextFamilyNameActual);
-        Assert.assertEquals(FacultyData.formErrorTextAddressExpected, formErrorTextAddressActual);
-        Assert.assertEquals(FacultyData.formErrorTextMetroExpected, formErrorTextMetroActual);
-        Assert.assertEquals(FacultyData.formErrorTextTelephoneExpected, formErrorTextTelephoneActual);
+        assertFormErrorNameText(formErrorTextNameActual);
+        assertFormErrorFamilyNameText(formErrorTextFamilyNameActual);
+        assertFormErrorAddressText(formErrorTextAddressActual);
+        assertFormErrorMetroText(formErrorTextMetroActual);
+        assertFormErrorTelephoneText(formErrorTextTelephoneActual);
     }
 
     @Test
-    public void formErrorsShowChromium(){
+    public void wrongOrderNumberSearch(){
 
-        String formErrorTextNameActual;
-        String formErrorTextFamilyNameActual;
-        String formErrorTextAddressActual;
-        String formErrorTextMetroActual;
-        String formErrorTextTelephoneActual;
+        HomePage.clickStatusHeaderButton(driver);
+        HomePage.fillStatusHeaderInputBarWithWrongData(driver);
+        HomePage.clickStatusHeaderGoButton(driver);
+        StatusPage.assertWrongOrderStatusScreen(driver);
 
-        System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary("/usr/bin/google-chrome-stable");
-        driver = new ChromeDriver(options);
-
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-
-        driver.findElement(By.xpath(OrderData.orderButtonHeader)).click();
-        driver.findElement(OrderData.buttonNextFormPage).click();
-
-        new WebDriverWait(driver, 1)
-                .until(ExpectedConditions.presenceOfElementLocated(FacultyData.formErrorLocatorName));
-        formErrorTextNameActual  = driver.findElement(FacultyData.formErrorLocatorName).getText();
-        formErrorTextFamilyNameActual = driver.findElement(FacultyData.formErrorLocatorFamilyName).getText();
-        formErrorTextAddressActual = driver.findElement(FacultyData.formErrorLocatorAddress).getText();
-        formErrorTextMetroActual = driver.findElement(FacultyData.formErrorLocatorMetro).getText();
-        formErrorTextTelephoneActual = driver.findElement(FacultyData.formErrorLocatorTelephone).getText();
-
-        Assert.assertEquals(FacultyData.formErrorTextNameExpected, formErrorTextNameActual);
-        Assert.assertEquals(FacultyData.formErrorTextFamilyNameExpected, formErrorTextFamilyNameActual);
-        Assert.assertEquals(FacultyData.formErrorTextAddressExpected, formErrorTextAddressActual);
-        Assert.assertEquals(FacultyData.formErrorTextMetroExpected, formErrorTextMetroActual);
-        Assert.assertEquals(FacultyData.formErrorTextTelephoneExpected, formErrorTextTelephoneActual);
-    }
-
-    @Test
-    public void wrongOrderNumberSearchFirefox(){
-
-        System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
-        driver = new FirefoxDriver();
-
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-
-        driver.findElement(FacultyData.statusHeaderButton).click();
-        driver.findElement(FacultyData.statusHeaderInputBar).sendKeys(FacultyData.statusHeaderInputBarWrongData);
-        driver.findElement(FacultyData.statusHeaderGoButton).click();
-        new WebDriverWait(driver, 2)
-                .until(ExpectedConditions.invisibilityOfElementLocated(OrderData.orderStatusScreen));
-    }
-
-    @Test
-    public void wrongOrderNumberSearchChromium(){
-
-        System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
-        ChromeOptions options = new ChromeOptions();
-        options.setBinary("/usr/bin/google-chrome-stable");
-        driver = new ChromeDriver(options);
-
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-
-        driver.findElement(FacultyData.statusHeaderButton).click();
-        new WebDriverWait(driver, 3)
-                .until(ExpectedConditions.visibilityOfElementLocated(FacultyData.statusHeaderInputBar));
-        driver.findElement(FacultyData.statusHeaderInputBar).sendKeys(FacultyData.statusHeaderInputBarWrongData);
-        driver.findElement(FacultyData.statusHeaderGoButton).click();
-        new WebDriverWait(driver, 2)
-                .until(ExpectedConditions.invisibilityOfElementLocated(OrderData.orderStatusScreen));
     }
 
     @After
