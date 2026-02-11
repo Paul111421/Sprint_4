@@ -20,19 +20,12 @@
 //Перейти на новую страницу
 //Проверить, что форма статуса заказа не появилась
 
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.junit.After;
 import org.junit.Test;
 import testvar.HomePage;
-import testvar.OrderPage;
 import testvar.StatusPage;
 
 import static testvar.OrderPage.*;
@@ -41,14 +34,10 @@ import java.util.Set;
 
 
 @RunWith(Parameterized.class)
-public class FacultyTasks {
-
-    private WebDriver driver;
-
-    private final String browserName;
+public class FacultyTasks extends BaseTest{
 
     public FacultyTasks(String browserName){
-        this.browserName = browserName;
+        super(browserName);
     }
 
     @Parameterized.Parameters(name = "{0}")
@@ -59,20 +48,6 @@ public class FacultyTasks {
         };
     }
 
-    @Before
-    public void setUp(){
-        if("firefox".equals(browserName)){
-            System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
-            driver = new FirefoxDriver();
-        } else if("chrome".equals(browserName)){
-            System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
-            ChromeOptions options = new ChromeOptions();
-            options.setBinary("/usr/bin/google-chrome-stable");
-            driver = new ChromeDriver(options);
-        }
-        driver.manage().window().maximize();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-    }
 
     @Test
     public void logoSamokat(){
@@ -155,8 +130,4 @@ public class FacultyTasks {
 
     }
 
-    @After
-    public void teardown(){
-        driver.quit();
-    }
 }

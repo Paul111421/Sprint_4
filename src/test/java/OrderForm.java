@@ -10,12 +10,6 @@
 //Кнопка "Посмотреть заказ"
 //Открывается страница заказа
 
-import org.junit.Before;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -25,11 +19,9 @@ import testvar.StatusPage;
 
 
 @RunWith(Parameterized.class)
-public class OrderForm {
+public class OrderForm extends BaseTest{
 
-    private WebDriver driver;
-
-    private final String browserName;//Добавил переменную, через параметризацию задаём разные драйвера до тестов
+    //Добавил переменную, через параметризацию задаём разные драйвера до тестов
     private final String orderButton; //важно в рамках теста - узлы кнопок в xpath!!
     private final String userName;
     private final String userFamilyName;
@@ -39,8 +31,8 @@ public class OrderForm {
     private final String date;
 
     public OrderForm(String browserName, String orderButton, String userName, String userFamilyName, String address, String metroStation,
-                     String telephone, String date){
-        this.browserName = browserName;
+                     String telephone, String date, String testType){
+        super(browserName);
         this.orderButton = orderButton;
         this.userName = userName;
         this.userFamilyName = userFamilyName;
@@ -50,45 +42,32 @@ public class OrderForm {
         this.date = date;
     }
 
-    @Parameterized.Parameters (name = "{0}, {2}")
+    @Parameterized.Parameters (name = "{0}, {8}")
     public static Object[][] getOrderFormData(){
         return new Object[][]{
                 {"firefox", HomePage.getOrderButtonHeader(),"Михаил","Булгаков", //Кнопка формы в хэдере
                         "г. Москва, Большая Садовая, д. 10, 1 этаж",
                         OrderPage.getMetroMayakovskaya(),
-                        "+74959700619", "02.02.2026"},
+                        "+74959700619", "02.02.2026", "Проверка верхней кнопки заказа"},
 
                 {"firefox", HomePage.getOrderButtonBottom(),"Олег","Парастаев", //Нижняя кнопка формы
                         "г. Москва, р-н Арбат, ул. Воздвиженка, 3",
                         OrderPage.getMetroLenina(),
-                        "+78001005790", "02.02.2026"},
+                        "+78001005790", "02.02.2026", "Проверка нижней кнопки заказа"},
 
                 {"chrome", HomePage.getOrderButtonHeader(),"Михаил","Булгаков", //Кнопка формы в хэдере
                         "г. Москва, Большая Садовая, д. 10, 1 этаж",
                         OrderPage.getMetroMayakovskaya(),
-                        "+74959700619", "02.02.2026"},
+                        "+74959700619", "02.02.2026", "Проверка верхней кнопки заказа"},
 
                 {"chrome", HomePage.getOrderButtonBottom(),"Олег","Парастаев", //Нижняя кнопка формы
                         "г. Москва, р-н Арбат, ул. Воздвиженка, 3",
                         OrderPage.getMetroLenina(),
-                        "+78001005790", "02.02.2026"}
+                        "+78001005790", "02.02.2026", "Проверка нижней кнопки заказа"}
         };
     }
 
-    @Before
-    public void setUp(){
-        if("firefox".equals(browserName)){
-            System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
-            driver = new FirefoxDriver();
-        } else if("chrome".equals(browserName)){
-            System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
-            ChromeOptions options = new ChromeOptions();
-            options.setBinary("/usr/bin/google-chrome-stable");
-            driver = new ChromeDriver(options);
-        }
-        driver.manage().window().maximize();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-    }
+
 
     @Test
     public void formTest() {
@@ -116,8 +95,5 @@ public class OrderForm {
         StatusPage.assertOrderStatusScreen(driver);
     }
 
-    @After
-    public void teardown(){
-        driver.quit();
-    }
+
 }

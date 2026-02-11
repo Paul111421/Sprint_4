@@ -2,50 +2,47 @@
 //8 вопросов на проверку
 //Проверка - нажать на вопрос и сравнить ответы
 
-import org.junit.After;
-import org.junit.Before;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.By;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import testvar.HomePage;
 
 @RunWith(Parameterized.class)
-public class ImportantQuestions {
+public class ImportantQuestions extends BaseTest {
 
-    private WebDriver driver;
+    private final By questionHeading;
+    private final By questionPanel;
+    private final String questionTextExpected;
 
-    private final String browserName;
-
-    public ImportantQuestions(String browserName){
-        this.browserName = browserName;
+    public ImportantQuestions(String browserName, By questionHeading, By questionPanel, String questionTextExpected, String questionNumber){
+        super(browserName);
+        this.questionHeading = questionHeading;
+        this.questionPanel = questionPanel;
+        this.questionTextExpected = questionTextExpected;
     }
 
-    @Parameterized.Parameters(name = "{0}")
+    @Parameterized.Parameters(name = "{0}, {4}")
     public static Object[][] getImportantQuestionsData(){
         return new Object[][]{
-                {"firefox"},
-                {"chrome"},
+                {"firefox", HomePage.getQuestionOneHeading(), HomePage.getQuestionOnePanel(), HomePage.getQuestionOneTextExpected(), "Вопрос 1"},
+                {"firefox", HomePage.getQuestionTwoHeading(), HomePage.getQuestionTwoPanel(), HomePage.getQuestionTwoTextExpected(), "Вопрос 2"},
+                {"firefox", HomePage.getQuestionThreeHeading(), HomePage.getQuestionThreePanel(), HomePage.getQuestionThreeTextExpected(), "Вопрос 3"},
+                {"firefox", HomePage.getQuestionFourHeading(), HomePage.getQuestionFourPanel(), HomePage.getQuestionFourTextExpected(), "Вопрос 4"},
+                {"firefox", HomePage.getQuestionFiveHeading(), HomePage.getQuestionFivePanel(), HomePage.getQuestionFiveTextExpected(), "Вопрос 5"},
+                {"firefox", HomePage.getQuestionSixHeading(), HomePage.getQuestionSixPanel(), HomePage.getQuestionSixTextExpected(), "Вопрос 6"},
+                {"firefox", HomePage.getQuestionSevenHeading(), HomePage.getQuestionSevenPanel(), HomePage.getQuestionSevenTextExpected(), "Вопрос 7"},
+                {"firefox", HomePage.getQuestionEightHeading(), HomePage.getQuestionEightPanel(), HomePage.getQuestionEightTextExpected(), "Вопрос 8"},
+
+                {"chrome", HomePage.getQuestionOneHeading(), HomePage.getQuestionOnePanel(), HomePage.getQuestionOneTextExpected(), "Вопрос 1"},
+                {"chrome", HomePage.getQuestionTwoHeading(), HomePage.getQuestionTwoPanel(), HomePage.getQuestionTwoTextExpected(), "Вопрос 2"},
+                {"chrome", HomePage.getQuestionThreeHeading(), HomePage.getQuestionThreePanel(), HomePage.getQuestionThreeTextExpected(), "Вопрос 3"},
+                {"chrome", HomePage.getQuestionFourHeading(), HomePage.getQuestionFourPanel(), HomePage.getQuestionFourTextExpected(), "Вопрос 4"},
+                {"chrome", HomePage.getQuestionFiveHeading(), HomePage.getQuestionFivePanel(), HomePage.getQuestionFiveTextExpected(), "Вопрос 5"},
+                {"chrome", HomePage.getQuestionSixHeading(), HomePage.getQuestionSixPanel(), HomePage.getQuestionSixTextExpected(), "Вопрос 6"},
+                {"chrome", HomePage.getQuestionSevenHeading(), HomePage.getQuestionSevenPanel(), HomePage.getQuestionSevenTextExpected(), "Вопрос 7"},
+
         };
-    }
-
-    @Before
-    public void setUp(){
-        if("firefox".equals(browserName)){
-            System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
-            driver = new FirefoxDriver();
-        } else if("chrome".equals(browserName)){
-            System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
-            ChromeOptions options = new ChromeOptions();
-            options.setBinary("/usr/bin/google-chrome-stable");
-            driver = new ChromeDriver(options);
-        }
-        driver.manage().window().maximize();
-        driver.get("https://qa-scooter.praktikum-services.ru/");
-
     }
 
     @Test
@@ -55,43 +52,10 @@ public class ImportantQuestions {
 
         HomePage.clickCookieButton(driver);
 
-        HomePage.clickQuestionOneHeading(driver);
-        textActual = HomePage.getQuestionOnePanelText(driver);
-        HomePage.assertQuestionOneTextExpectedActual(textActual);
-
-        HomePage.clickQuestionTwoHeading(driver);
-        textActual = HomePage.getQuestionTwoPanelText(driver);
-        HomePage.assertQuestionTwoTextExpectedActual(textActual);
-
-        HomePage.clickQuestionThreeHeading(driver);
-        textActual = HomePage.getQuestionThreePanelText(driver);
-        HomePage.assertQuestionThreeTextExpectedActual(textActual);
-
-        HomePage.clickQuestionFourHeading(driver);
-        textActual = HomePage.getQuestionFourPanelText(driver);
-        HomePage.assertQuestionFourTextExpectedActual(textActual);
-
-        HomePage.clickQuestionFiveHeading(driver);
-        textActual = HomePage.getQuestionFivePanelText(driver);
-        HomePage.assertQuestionFiveTextExpectedActual(textActual);
-
-        HomePage.clickQuestionSixHeading(driver);
-        textActual = HomePage.getQuestionSixPanelText(driver);
-        HomePage.assertQuestionSixTextExpectedActual(textActual);
-
-        HomePage.clickQuestionSevenHeading(driver);
-        textActual = HomePage.getQuestionSevenPanelText(driver);
-        HomePage.assertQuestionSevenTextExpectedActual(textActual);
-
-        HomePage.clickQuestionEightHeading(driver);
-        textActual = HomePage.getQuestionEightPanelText(driver);
-        HomePage.assertQuestionEightTextExpectedActual(textActual);
+        HomePage.clickQuestionHeading(driver, questionHeading);
+        textActual = HomePage.getQuestionPanelText(driver, questionPanel);
+        HomePage.assertQuestionTextExpectedActual(questionTextExpected, textActual);
 
     }
 
-
-    @After
-    public void teardown(){
-        driver.quit();
-    }
 }
