@@ -2,7 +2,6 @@
 //8 вопросов на проверку
 //Проверка - нажать на вопрос и сравнить ответы
 
-import org.openqa.selenium.By;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -11,50 +10,46 @@ import testvar.HomePage;
 @RunWith(Parameterized.class)
 public class ImportantQuestions extends BaseTest {
 
-    private final By questionHeading;
-    private final By questionPanel;
+    private final String questionNumber;
     private final String questionTextExpected;
 
-    public ImportantQuestions(String browserName, By questionHeading, By questionPanel, String questionTextExpected, String questionNumber){
+    public ImportantQuestions(String browserName, String questionNumber, String questionTextExpected){
         super(browserName);
-        this.questionHeading = questionHeading;
-        this.questionPanel = questionPanel;
+        this.questionNumber = questionNumber;
         this.questionTextExpected = questionTextExpected;
     }
 
-    @Parameterized.Parameters(name = "{0}, {4}")
+    @Parameterized.Parameters(name = "{0}, {1}")
     public static Object[][] getImportantQuestionsData(){
         return new Object[][]{
-                {"firefox", HomePage.getQuestionOneHeading(), HomePage.getQuestionOnePanel(), HomePage.getQuestionOneTextExpected(), "Вопрос 1"},
-                {"firefox", HomePage.getQuestionTwoHeading(), HomePage.getQuestionTwoPanel(), HomePage.getQuestionTwoTextExpected(), "Вопрос 2"},
-                {"firefox", HomePage.getQuestionThreeHeading(), HomePage.getQuestionThreePanel(), HomePage.getQuestionThreeTextExpected(), "Вопрос 3"},
-                {"firefox", HomePage.getQuestionFourHeading(), HomePage.getQuestionFourPanel(), HomePage.getQuestionFourTextExpected(), "Вопрос 4"},
-                {"firefox", HomePage.getQuestionFiveHeading(), HomePage.getQuestionFivePanel(), HomePage.getQuestionFiveTextExpected(), "Вопрос 5"},
-                {"firefox", HomePage.getQuestionSixHeading(), HomePage.getQuestionSixPanel(), HomePage.getQuestionSixTextExpected(), "Вопрос 6"},
-                {"firefox", HomePage.getQuestionSevenHeading(), HomePage.getQuestionSevenPanel(), HomePage.getQuestionSevenTextExpected(), "Вопрос 7"},
-                {"firefox", HomePage.getQuestionEightHeading(), HomePage.getQuestionEightPanel(), HomePage.getQuestionEightTextExpected(), "Вопрос 8"},
+                {"firefox", "Вопрос 1", "Сутки — 400 рублей. Оплата курьеру — наличными или картой."},
+                {"firefox", "Вопрос 2", "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."},
+                {"firefox", "Вопрос 3", "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30."},
+                {"firefox", "Вопрос 4", "Только начиная с завтрашнего дня. Но скоро станем расторопнее."},
+                {"firefox", "Вопрос 5", "Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010."},
+                {"firefox", "Вопрос 6", "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится."},
+                {"firefox", "Вопрос 7", "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои."},
+                {"firefox", "Вопрос 8", "Да, обязательно. Всем самокатов! И Москве, и Московской области."},
 
-                {"chrome", HomePage.getQuestionOneHeading(), HomePage.getQuestionOnePanel(), HomePage.getQuestionOneTextExpected(), "Вопрос 1"},
-                {"chrome", HomePage.getQuestionTwoHeading(), HomePage.getQuestionTwoPanel(), HomePage.getQuestionTwoTextExpected(), "Вопрос 2"},
-                {"chrome", HomePage.getQuestionThreeHeading(), HomePage.getQuestionThreePanel(), HomePage.getQuestionThreeTextExpected(), "Вопрос 3"},
-                {"chrome", HomePage.getQuestionFourHeading(), HomePage.getQuestionFourPanel(), HomePage.getQuestionFourTextExpected(), "Вопрос 4"},
-                {"chrome", HomePage.getQuestionFiveHeading(), HomePage.getQuestionFivePanel(), HomePage.getQuestionFiveTextExpected(), "Вопрос 5"},
-                {"chrome", HomePage.getQuestionSixHeading(), HomePage.getQuestionSixPanel(), HomePage.getQuestionSixTextExpected(), "Вопрос 6"},
-                {"chrome", HomePage.getQuestionSevenHeading(), HomePage.getQuestionSevenPanel(), HomePage.getQuestionSevenTextExpected(), "Вопрос 7"},
-
+                {"chrome", "Вопрос 1", "Сутки — 400 рублей. Оплата курьеру — наличными или картой."},
+                {"chrome", "Вопрос 2", "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."},
+                {"chrome", "Вопрос 3", "Допустим, вы оформляете заказ на 8 мая. Мы привозим самокат 8 мая в течение дня. Отсчёт времени аренды начинается с момента, когда вы оплатите заказ курьеру. Если мы привезли самокат 8 мая в 20:30, суточная аренда закончится 9 мая в 20:30."},
+                {"chrome", "Вопрос 4", "Только начиная с завтрашнего дня. Но скоро станем расторопнее."},
+                {"chrome", "Вопрос 5", "Пока что нет! Но если что-то срочное — всегда можно позвонить в поддержку по красивому номеру 1010."},
+                {"chrome", "Вопрос 6", "Самокат приезжает к вам с полной зарядкой. Этого хватает на восемь суток — даже если будете кататься без передышек и во сне. Зарядка не понадобится."},
+                {"chrome", "Вопрос 7", "Да, пока самокат не привезли. Штрафа не будет, объяснительной записки тоже не попросим. Все же свои."},
+                {"chrome", "Вопрос 8", "Да, обязательно. Всем самокатов! И Москве, и Московской области."},
         };
     }
 
     @Test
     public void questionTest(){
 
-        String textActual;
+        String questionTextActual;
 
-        HomePage.clickCookieButton(driver);
+        questionTextActual = HomePage.getQuestionNumberTextActual(driver, questionNumber);
 
-        HomePage.clickQuestionHeading(driver, questionHeading);
-        textActual = HomePage.getQuestionPanelText(driver, questionPanel);
-        HomePage.assertQuestionTextExpectedActual(questionTextExpected, textActual);
+        HomePage.assertQuestionTextExpectedActual(questionTextExpected, questionTextActual);
 
     }
 

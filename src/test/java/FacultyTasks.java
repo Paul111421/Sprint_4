@@ -36,28 +36,29 @@ import java.util.Set;
 @RunWith(Parameterized.class)
 public class FacultyTasks extends BaseTest{
 
-    public FacultyTasks(String browserName){
+    private final String orderButton;
+
+    public FacultyTasks(String browserName, String orderButton){
         super(browserName);
+        this.orderButton = orderButton;
     }
 
     @Parameterized.Parameters(name = "{0}")
     public static Object[][] getImportantQuestionsData(){
         return new Object[][]{
-                {"firefox"},
-                {"chrome"},
+                {"firefox", "Верхняя кнопка заказа"},
+                {"chrome", "Верхняя кнопка заказа"},
         };
     }
-
 
     @Test
     public void logoSamokat(){
 
-        HomePage.clickOrderButton(driver, HomePage.getOrderButtonHeader());
+        HomePage.clickOrderButton(driver, orderButton);
         HomePage.clickSamokatLogo(driver);
         HomePage.assertHomePageAfterClickingOnSamokatLogo(driver);
 
     }
-
 
     public void switchToNewWindowIfOpened() {
 
@@ -103,7 +104,7 @@ public class FacultyTasks extends BaseTest{
         String formErrorTextMetroActual;
         String formErrorTextTelephoneActual;
 
-        HomePage.clickOrderButton(driver, HomePage.getOrderButtonHeader());
+        HomePage.clickOrderButton(driver, orderButton);
         clickButtonNextFormPage(driver);
 
         waitForFormErrorName(driver);

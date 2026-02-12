@@ -13,6 +13,7 @@ public class BaseTest {
     public BaseTest(String browserName){
         this.browserName = browserName;
     }
+
     @Before
     public void setUp(){
 
@@ -27,6 +28,7 @@ public class BaseTest {
         }
         driver.manage().window().maximize();
         driver.get(HomePage.getSamokatUrl());
+        HomePage.clickCookieButton(driver);
     }
 
     @After

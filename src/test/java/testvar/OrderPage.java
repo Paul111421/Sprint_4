@@ -20,11 +20,11 @@ public class OrderPage {
 
     private final static By METRO_INPUT = By.xpath(".//input[@class='select-search__input']");
 
-    private final static String METRO_ROKOSSOVSKOGO = ".//button[@value='1']";
+    private final static By METRO_ROKOSSOVSKOGO = By.xpath(".//button[@value='1']");
 
-    private final static String METRO_MAYAKOVSKAYA = ".//button[@value='30']";
+    private final static By METRO_MAYAKOVSKAYA = By.xpath(".//button[@value='30']");
 
-    private final static String METRO_LENINA = ".//button[@value='11']";
+    private final static By METRO_LENINA = By.xpath(".//button[@value='11']");
 
     private final static By TELEPHONE_INPUT = By.xpath(".//input[@class='Input_Input__1iN_Z Input_Responsible__1jDKN' and @placeholder='* Телефон: на него позвонит курьер']");
 
@@ -77,19 +77,32 @@ public class OrderPage {
     }
 
     public static void fillMetroInput(WebDriver driver, String metroStation) {
+
+        By caseMetroStation = null;
+
+        switch (metroStation){
+            case ("Метро Маяковская"):
+                caseMetroStation = METRO_MAYAKOVSKAYA;
+                break;
+            case ("Библиотека имени Ленина"):
+                caseMetroStation = METRO_LENINA;
+                break;
+        }
         driver.findElement(METRO_INPUT).click();
         new WebDriverWait(driver, 2)
-                .until(ExpectedConditions.presenceOfElementLocated(By.xpath(METRO_ROKOSSOVSKOGO)));
-        WebElement stationElement = driver.findElement(By.xpath(metroStation));
+                .until(ExpectedConditions.presenceOfElementLocated(METRO_ROKOSSOVSKOGO));
+        WebElement stationElement = driver.findElement(caseMetroStation);
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", stationElement);
         stationElement.click();
     }
-    public static String getMetroMayakovskaya() {
+
+    public static By getMetroMayakovskaya() {
         return METRO_MAYAKOVSKAYA;
     }
-    public static String getMetroLenina() {
+    public static By getMetroLenina() {
         return METRO_LENINA;
     }
+
     public static void fillTelephoneInput(WebDriver driver, String telephone) {
         driver.findElement(TELEPHONE_INPUT).sendKeys(telephone);
     }

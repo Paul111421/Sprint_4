@@ -31,7 +31,7 @@ public class OrderForm extends BaseTest{
     private final String date;
 
     public OrderForm(String browserName, String orderButton, String userName, String userFamilyName, String address, String metroStation,
-                     String telephone, String date, String testType){
+                     String telephone, String date){
         super(browserName);
         this.orderButton = orderButton;
         this.userName = userName;
@@ -42,28 +42,28 @@ public class OrderForm extends BaseTest{
         this.date = date;
     }
 
-    @Parameterized.Parameters (name = "{0}, {8}")
+    @Parameterized.Parameters (name = "{0}, {1}")
     public static Object[][] getOrderFormData(){
         return new Object[][]{
-                {"firefox", HomePage.getOrderButtonHeader(),"Михаил","Булгаков", //Кнопка формы в хэдере
+                {"firefox", "Верхняя кнопка заказа","Михаил","Булгаков", //Кнопка формы в хэдере
                         "г. Москва, Большая Садовая, д. 10, 1 этаж",
-                        OrderPage.getMetroMayakovskaya(),
-                        "+74959700619", "02.02.2026", "Проверка верхней кнопки заказа"},
+                        "Метро Маяковская",
+                        "+74959700619", "02.02.2026"},
 
-                {"firefox", HomePage.getOrderButtonBottom(),"Олег","Парастаев", //Нижняя кнопка формы
+                {"firefox", "Нижняя кнопка заказа","Олег","Парастаев", //Нижняя кнопка формы
                         "г. Москва, р-н Арбат, ул. Воздвиженка, 3",
-                        OrderPage.getMetroLenina(),
-                        "+78001005790", "02.02.2026", "Проверка нижней кнопки заказа"},
+                        "Библиотека имени Ленина",
+                        "+78001005790", "02.02.2026"},
 
-                {"chrome", HomePage.getOrderButtonHeader(),"Михаил","Булгаков", //Кнопка формы в хэдере
+                {"chrome", "Верхняя кнопка заказа","Михаил","Булгаков", //Кнопка формы в хэдере
                         "г. Москва, Большая Садовая, д. 10, 1 этаж",
-                        OrderPage.getMetroMayakovskaya(),
-                        "+74959700619", "02.02.2026", "Проверка верхней кнопки заказа"},
+                        "Метро Маяковская",
+                        "+74959700619", "02.02.2026"},
 
-                {"chrome", HomePage.getOrderButtonBottom(),"Олег","Парастаев", //Нижняя кнопка формы
+                {"chrome", "Нижняя кнопка заказа","Олег","Парастаев", //Нижняя кнопка формы
                         "г. Москва, р-н Арбат, ул. Воздвиженка, 3",
-                        OrderPage.getMetroLenina(),
-                        "+78001005790", "02.02.2026", "Проверка нижней кнопки заказа"}
+                        "Библиотека имени Ленина",
+                        "+78001005790", "02.02.2026"}
         };
     }
 
@@ -72,7 +72,6 @@ public class OrderForm extends BaseTest{
     @Test
     public void formTest() {
 
-        HomePage.clickCookieButton(driver); //убираем куки - второй тест глохнет
         HomePage.clickOrderButton(driver, orderButton);
 
         //Вводим первые данные
