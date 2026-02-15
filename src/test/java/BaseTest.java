@@ -1,0 +1,38 @@
+import org.junit.After;
+import org.junit.Before;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import testvar.HomePage;
+
+public class BaseTest {
+
+    public WebDriver driver;
+    private final String browserName;
+    public BaseTest(String browserName){
+        this.browserName = browserName;
+    }
+
+    @Before
+    public void setUp(){
+
+        if("firefox".equals(browserName)){
+            System.setProperty("webdriver.gecko.driver","/home/vdwv/WebDriver/bin/geckodriver");
+            driver = new FirefoxDriver();
+        } else if("chrome".equals(browserName)){
+            System.setProperty("webdriver.chrome.driver", "/home/vdwv/WebDriver/bin/chromedriver-linux64/chromedriver");
+            ChromeOptions options = new ChromeOptions();
+            options.setBinary("/usr/bin/google-chrome-stable");
+            driver = new ChromeDriver(options);
+        }
+        driver.manage().window().maximize();
+        driver.get(HomePage.getSamokatUrl());
+        HomePage.clickCookieButton(driver);
+    }
+
+    @After
+    public void teardown(){
+        driver.quit();
+    }
+}
